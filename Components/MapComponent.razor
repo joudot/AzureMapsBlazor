@@ -1,0 +1,41 @@
+﻿@inject IJSRuntime JSRuntime
+
+<div id="mapDiv" style="width:100%;height:400px;"></div>
+
+@code {
+    [Parameter] public string MapsKey { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initializeMap", MapsKey);
+        }
+    }
+
+    private async Task AddMarkerAsync(double latitude, double longitude)
+    {
+        await JSRuntime.InvokeVoidAsync("addMarker", new { latitude, longitude });
+    }
+
+    private async Task ShowUserLocationAsync()
+    {
+        try
+        {
+            var userLocation = await JSRuntime.InvokeAsync<Location>("requestUserLocation");
+            await AddMarkerAsync(userLocation.Latitude, userLocation.Longitude);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    public sealed class Location
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+    }
+}
+
+<button @onclick="ShowUserLocationAsync">Show My Location</button>

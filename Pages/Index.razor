@@ -1,0 +1,12 @@
+﻿@page "/"
+@using AzureMapsBlazor.Components
+
+<h1>Azure Maps in Blazor</h1>
+
+<MapComponent MapsKey="@MapsKey" />
+
+@code {
+    private string MapsKey => <INSERT_AZURE_MAP_KEY>;
+}
+
+
